@@ -42,14 +42,14 @@ export default function SignupPage() {
       <div className="max-w-md w-full space-y-8">
         <div>
           <h2 className="mt-6 text-center text-3xl font-extrabold bg-gradient-to-r from-purple-600 to-blue-500 bg-clip-text text-transparent">
-            Create your account
+            Crie sua conta
           </h2>
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="rounded-lg shadow-sm -space-y-px">
             <div>
               <label htmlFor="name" className="sr-only">
-                Name
+                Nome
               </label>
               <input
                 id="name"
@@ -64,7 +64,7 @@ export default function SignupPage() {
             </div>
             <div>
               <label htmlFor="email" className="sr-only">
-                Email address
+                Email
               </label>
               <input
                 id="email"
@@ -79,7 +79,7 @@ export default function SignupPage() {
             </div>
             <div>
               <label htmlFor="password" className="sr-only">
-                Password
+                Senha
               </label>
               <input
                 id="password"
@@ -109,7 +109,7 @@ export default function SignupPage() {
         </form>
         <div className="text-center">
           <Link href="/login" className="font-medium text-purple-600 hover:text-purple-500">
-            Already have an account? Sign in
+            Já tem uma conta? Entrar
           </Link>
         </div>
       </div>
