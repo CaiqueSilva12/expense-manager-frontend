@@ -29,8 +29,9 @@ export default function SignupPage() {
       } else {
         setError(data.error || 'Signup failed');
       }
-    } catch (err) {
-      setError('An error occurred during signup');
+    } catch (error) {
+      console.error('Erro ao cadastrar usuário:', error);
+      setError('Erro ao cadastrar usuário');
     }
   };
 
