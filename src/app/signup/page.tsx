@@ -11,10 +11,12 @@ export default function SignupPage() {
   const [error, setError] = useState('');
   const router = useRouter();
 
+  const NEXT_PUBLIC_API_URL = process.env.NEXT_PUBLIC_API_URL;
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:3001/api/users', {
+      const response = await fetch(`${NEXT_PUBLIC_API_URL}/api/users`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

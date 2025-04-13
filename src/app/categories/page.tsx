@@ -19,6 +19,8 @@ export default function CategoriesPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
 
+  const NEXT_PUBLIC_API_URL = process.env.NEXT_PUBLIC_API_URL;
+
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -30,7 +32,9 @@ export default function CategoriesPage() {
           return;
         }
 
-        const response = await fetch(`http://localhost:3001/api/categories/${userId}`, {
+        const NEXT_PUBLIC_API_URL = process.env.NEXT_PUBLIC_API_URL;
+
+        const response = await fetch(`${NEXT_PUBLIC_API_URL}/api/categories/${userId}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -65,7 +69,7 @@ export default function CategoriesPage() {
         return;
       }
 
-      const response = await fetch('http://localhost:3001/api/categories', {
+      const response = await fetch(`${NEXT_PUBLIC_API_URL}/api/categories`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -103,7 +107,7 @@ export default function CategoriesPage() {
         return;
       }
 
-      const response = await fetch(`http://localhost:3001/api/categories/${categoryId}`, {
+      const response = await fetch(`${NEXT_PUBLIC_API_URL}/api/categories/${categoryId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

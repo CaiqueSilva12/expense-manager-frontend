@@ -34,6 +34,8 @@ export default function DashboardPage() {
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const router = useRouter();
 
+  const NEXT_PUBLIC_API_URL = process.env.NEXT_PUBLIC_API_URL;
+
   const months = [
     'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
     'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
@@ -98,17 +100,17 @@ export default function DashboardPage() {
         });
 
         const [transactionsRes, categoriesRes, userRes] = await Promise.all([
-          fetch(`http://localhost:3001/api/transactions/${userId}?month=${String(new Date().getMonth() + 1)}&year=${String(new Date().getFullYear())}`, {
+          fetch(`${NEXT_PUBLIC_API_URL}/api/transactions/${userId}?month=${String(new Date().getMonth() + 1)}&year=${String(new Date().getFullYear())}`, {
             headers: {
               Authorization: `Bearer ${token}`,
             },
           }),
-          fetch(`http://localhost:3001/api/categories/${userId}`, {
+          fetch(`${NEXT_PUBLIC_API_URL}/api/categories/${userId}`, {
             headers: {
               Authorization: `Bearer ${token}`,
             },
           }),
-          fetch(`http://localhost:3001/api/users/id/${userId}`, {
+          fetch(`${NEXT_PUBLIC_API_URL}/api/users/id/${userId}`, {
             headers: {
               Authorization: `Bearer ${token}`,
             },

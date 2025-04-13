@@ -19,14 +19,16 @@ export default function TransactionsPage() {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
-
+  
+  
   useEffect(() => {
     const fetchCategories = async () => {
       try {
         const token = localStorage.getItem('token');
         const userId = localStorage.getItem('userId');
-
-        const response = await fetch(`http://localhost:3001/api/categories/${userId}`, {
+        
+        const NEXT_PUBLIC_API_URL = process.env.NEXT_PUBLIC_API_URL;
+        const response = await fetch(`${NEXT_PUBLIC_API_URL}/api/categories/${userId}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -58,7 +60,9 @@ export default function TransactionsPage() {
         return;
       }
 
-      const response = await fetch('http://localhost:3001/api/transactions', {
+      const NEXT_PUBLIC_API_URL = process.env.NEXT_PUBLIC_API_URL;
+
+      const response = await fetch(`${NEXT_PUBLIC_API_URL}/api/transactions`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
