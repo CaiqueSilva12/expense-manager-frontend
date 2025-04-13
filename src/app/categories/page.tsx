@@ -43,6 +43,7 @@ export default function CategoriesPage() {
         const data = await response.json();
         setCategories(data);
       } catch (error) {
+        console.error('Erro ao carregar categorias:', error);
         setError('Erro ao carregar categorias');
       } finally {
         setIsLoading(false);
@@ -85,6 +86,7 @@ export default function CategoriesPage() {
       setCategories([...categories, data]);
       setNewCategory({ name: '', budget: '' });
     } catch (error) {
+      console.error('Erro ao adicionar categoria:', error);
       setError('Erro ao adicionar categoria');
     } finally {
       setIsSubmitting(false);
@@ -123,6 +125,7 @@ export default function CategoriesPage() {
         )
       );
     } catch (error) {
+      console.error('Erro ao atualizar orçamento:', error);
       setError('Erro ao atualizar orçamento');
     }
   };

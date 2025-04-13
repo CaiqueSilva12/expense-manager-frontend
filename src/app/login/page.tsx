@@ -34,6 +34,7 @@ export default function LoginPage() {
         setError(data.error || 'Erro ao fazer login');
       }
     } catch (error) {
+      console.error('Erro ao fazer login:', error);
       setError('Erro ao fazer login');
     } finally {
       setIsLoading(false);

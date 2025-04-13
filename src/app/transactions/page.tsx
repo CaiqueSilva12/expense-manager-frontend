@@ -83,7 +83,8 @@ export default function TransactionsPage() {
         setError(data.error || 'Failed to create transaction');
       }
     } catch (error) {
-      setError('An error occurred while creating the transaction');
+      console.error('Erro ao criar transação:', error);
+      setError('Erro ao criar transação');
     }
   };
 
