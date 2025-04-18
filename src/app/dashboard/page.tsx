@@ -60,44 +60,14 @@ export default function DashboardPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        console.log('Dashboard: Starting data fetch...');
         const token = localStorage.getItem('token');
         const userId = localStorage.getItem('userId');
 
-        console.log('Dashboard: Retrieved from localStorage:', {
-          hasToken: !!token,
-          hasUserId: !!userId,
-          userIdValue: userId
-        });
-
         if (!token || !userId) {
-          console.error('Dashboard: Missing credentials', {
-            token: token ? 'Present' : 'Missing',
-            userId: userId ? 'Present' : 'Missing'
-          });
+          console.log('No token or userId found, redirecting to login');
           router.push('/login');
           return;
         }
-
-        // Validate userId format (should be a 24-character hex string)
-        if (!/^[0-9a-fA-F]{24}$/.test(userId)) {
-          console.error('Dashboard: Invalid userId format', {
-            userId,
-            length: userId?.length,
-            isHex: /^[0-9a-fA-F]+$/.test(userId || ''),
-            expectedLength: 24
-          });
-          setError('Invalid user ID format. Please log in again.');
-          return;
-        }
-
-        console.log('Dashboard: Making API requests...');
-        console.log('Request details:', {
-          userId,
-          token: token ? 'Present' : 'Missing',
-          month: new Date().getMonth() + 1,
-          year: new Date().getFullYear()
-        });
 
         const [transactionsRes, categoriesRes, userRes] = await Promise.all([
           fetch(`${NEXT_PUBLIC_API_URL}/api/transactions/${userId}?month=${String(new Date().getMonth() + 1)}&year=${String(new Date().getFullYear())}`, {
@@ -117,38 +87,28 @@ export default function DashboardPage() {
           }),
         ]);
 
-        console.log('API Responses:', {
-          transactionsStatus: transactionsRes.status,
-          categoriesStatus: categoriesRes.status,
-          userStatus: userRes.status
-        });
+        // Check for token expiration or invalid token
+        if (transactionsRes.status === 403 || categoriesRes.status === 403 || userRes.status === 403) {
+          console.log('Token expired or invalid, clearing storage and redirecting to login');
+          localStorage.removeItem('token');
+          localStorage.removeItem('userId');
+          localStorage.removeItem('user');
+          router.push('/login');
+          return;
+        }
 
-        // Check each response individually to provide better error messages
         if (!transactionsRes.ok) {
           const errorData = await transactionsRes.json().catch(() => ({}));
-          console.error('Transactions API error:', {
-            status: transactionsRes.status,
-            statusText: transactionsRes.statusText,
-            errorData,
-          });
           throw new Error(`Failed to fetch transactions: ${transactionsRes.status} ${errorData.error || errorData.message || transactionsRes.statusText}`);
         }
+
         if (!categoriesRes.ok) {
           const errorData = await categoriesRes.json().catch(() => ({}));
-          console.error('Categories API error:', {
-            status: categoriesRes.status,
-            statusText: categoriesRes.statusText,
-            errorData,
-          });
           throw new Error(`Failed to fetch categories: ${categoriesRes.status} ${errorData.message || categoriesRes.statusText}`);
         }
+
         if (!userRes.ok) {
           const errorData = await userRes.json().catch(() => ({}));
-          console.error('User API error:', {
-            status: userRes.status,
-            statusText: userRes.statusText,
-            errorData,
-          });
           throw new Error(`Failed to fetch user data: ${userRes.status} ${errorData.message || userRes.statusText}`);
         }
 
@@ -157,21 +117,6 @@ export default function DashboardPage() {
           categoriesRes.json(),
           userRes.json(),
         ]);
-
-        // Ensure transactions is an array
-        if (!Array.isArray(transactionsData)) {
-          throw new Error('Invalid transactions data format');
-        }
-
-        // Ensure categories is an array
-        if (!Array.isArray(categoriesData)) {
-          throw new Error('Invalid categories data format');
-        }
-
-        // Ensure user data has the required properties
-        if (typeof userData.balance !== 'number') {
-          throw new Error('Invalid user data format');
-        }
 
         setTransactions(transactionsData);
         setCategories(categoriesData);
@@ -269,24 +214,22 @@ export default function DashboardPage() {
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       <nav className="bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16">
-            <div className="flex">
-              <div className="flex-shrink-0 flex items-center">
-                <h1 className="text-xl font-bold bg-gradient-to-r from-purple-600 to-blue-500 bg-clip-text text-transparent">
-                  Gerenciador de Despesas
-                </h1>
-              </div>
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center py-4 sm:py-0 sm:h-16">
+            <div className="flex-shrink-0 flex items-center mb-4 sm:mb-0">
+              <h1 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-500 bg-clip-text text-transparent">
+                Gerenciador de Despesas
+              </h1>
             </div>
-            <div className="flex items-center space-x-4">
+            <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
               <Link
                 href="/transactions"
-                className="px-4 py-2 border border-transparent text-sm font-medium rounded-lg text-white bg-gradient-to-r from-purple-600 to-blue-500 hover:from-purple-700 hover:to-blue-600 transition-all duration-200 shadow-sm"
+                className="w-full sm:w-auto px-4 py-2 border border-transparent text-sm font-medium rounded-lg text-white bg-gradient-to-r from-purple-600 to-blue-500 hover:from-purple-700 hover:to-blue-600 transition-all duration-200 shadow-sm text-center"
               >
                 Adicionar Transação
               </Link>
               <button
                 onClick={handleLogout}
-                className="px-4 py-2 border border-transparent text-sm font-medium rounded-lg text-white bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 transition-all duration-200 shadow-sm"
+                className="w-full sm:w-auto px-4 py-2 border border-transparent text-sm font-medium rounded-lg text-white bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 transition-all duration-200 shadow-sm text-center"
               >
                 Sair
               </button>
